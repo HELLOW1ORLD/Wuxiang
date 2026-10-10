@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "benchmark": {
+    "build_manifest_path": "reports/benchmark-build-manifest.json",
+    "output_dir": "benchmark-packs",
+    "seeds": [
+      11,
+      23,
+      47
+    ]
+  }
+}

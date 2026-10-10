@@ -1,0 +1,30 @@
+name: Native LLVM validation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.10'
+      - name: Fetch pinned LLVM SDK
+        run: python tools/bootstrap_llvm.py
+      - name: Build mixed compatibility example
+        run: python wuxiang.py protect --config examples/compat.json
+      - name: Verify native transform regressions
+        run: python -m unittest discover -s tests -p test_transformer.py -v
+      - name: Run behavior self-checks
+        run: |
+          & .\build\compat\baseline.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .\build\compat\protected.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & .\build\compat\msvc.exe
+          exit $LASTEXITCODE

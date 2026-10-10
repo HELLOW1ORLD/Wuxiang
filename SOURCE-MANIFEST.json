@@ -1,0 +1,292 @@
+{
+  "schema_version": 1,
+  "project": "Wuxiang",
+  "version": "0.1.0",
+  "source_only": true,
+  "license": "MIT",
+  "copyright_holder": "HELLOW1ORLD",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 174,
+      "sha256": "ee3a6583d1bea088fa740dd77dd2e3b68927d01282f76989018f998558ea4086"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 665,
+      "sha256": "9acf84123be0ebd12d38bd22ad16af4071bd83d183d57e4b8aa954d921194edc"
+    },
+    {
+      "path": ".github/workflows/native.yml",
+      "bytes": 970,
+      "sha256": "cc104ca9eef605ae4bce9af42033756df070b0870fe8bf3cb8619bc9507b6138"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 230,
+      "sha256": "0f624d778f3d843a7a004d532d95111512ebaaf35c6d4317c4266d0d79550353"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 623,
+      "sha256": "1119bf513a107fbc5c61bc9590866b2c43f097435b04e4373f41b9521dcd9298"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "bytes": 2456,
+      "sha256": "76b27999843687ea93e0259a0f350e96d2eb88956acf3792357673535900a0dd"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 1332,
+      "sha256": "c611e3de099c747525f8266ae6bdaf6f31cdf38b800e59aaa73c49de013ec620"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1068,
+      "sha256": "f95ac62bee511ee8ae3aa2c7f2fe331f7c0828dd8afeb265707d9088a5f45502"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4392,
+      "sha256": "7a772ea9969918c080867f92894cc2933cfe1462f7007b92c35d10a311d408a2"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "bytes": 2727,
+      "sha256": "92a268c121639c7566e846e493c0ff57e4d72974688b2812d33515d312b38156"
+    },
+    {
+      "path": "SECURITY.md",
+      "bytes": 926,
+      "sha256": "f6767e382a0e2011ad7e1264c2a5d67dff0fcdf457eb3dad5588b84799480024"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 1344,
+      "sha256": "bd38e8167f67cb7b0247dd04de2207381d486c1a35896a1922fc9d7991ca647a"
+    },
+    {
+      "path": "bench-config.json",
+      "bytes": 215,
+      "sha256": "75792f61fcb11108bb9776d83e13221a8750ecad8498b091600cfc3b5d1e13cf"
+    },
+    {
+      "path": "bench-research-config.json",
+      "bytes": 264,
+      "sha256": "e678ec370ac6f1f883c0b72021ec091ee20705a6df90f62662e1ebb628037d29"
+    },
+    {
+      "path": "bench/harness.cpp",
+      "bytes": 2554,
+      "sha256": "bb238abbc816f5e2d060b2d2f3a45e9bb96fe60917f8b7b8e61d452284233b65"
+    },
+    {
+      "path": "bench/task.h",
+      "bytes": 361,
+      "sha256": "f2d18c49ca50d50b2696bdd04b9953810bd0547f9d3dc8a172f0a9c93cb52111"
+    },
+    {
+      "path": "bench/tasks.cpp",
+      "bytes": 2044,
+      "sha256": "9317536797c216dfb5dd1e642dda211ef4e98cd31bb995eab106204c1cdcd39f"
+    },
+    {
+      "path": "cmake/Wuxiang.cmake",
+      "bytes": 5216,
+      "sha256": "6e7d7b3cf0a9632b5362bb49bb8d6917991298127e5e739771eedf033f784868"
+    },
+    {
+      "path": "docs/cmake-adapter.md",
+      "bytes": 2312,
+      "sha256": "49c05f16c8337f667b207094245168e458a5557dec4325fe0d48bf431b55a245"
+    },
+    {
+      "path": "docs/evaluation.md",
+      "bytes": 4007,
+      "sha256": "8b76376d09a9c38fbb7e5277c658c3c18727bbb4aa3f4a02097b453f530057f1"
+    },
+    {
+      "path": "docs/github-upload.zh-CN.md",
+      "bytes": 5032,
+      "sha256": "48e39ecf90c49b33e86ce536787edfd548d3cf9d27c802d7774ddb165f0a0049"
+    },
+    {
+      "path": "docs/results.md",
+      "bytes": 3703,
+      "sha256": "831bdfefb137d461a78d6e7239e4d139dae5bd9407c153d5c859d2eb79bed1bc"
+    },
+    {
+      "path": "docs/reverse-engineering-lessons.md",
+      "bytes": 2795,
+      "sha256": "3e41307970dcb8be5a4e8106f8f6ec194a8b8eb6d6e9c6455f1f8fa7d6306ded"
+    },
+    {
+      "path": "docs/usage.zh-CN.md",
+      "bytes": 6754,
+      "sha256": "4f41833dc60933e7484a0e615e09e7c9de8167039fd2ad29f7a8512911114ce0"
+    },
+    {
+      "path": "examples/compat.json",
+      "bytes": 299,
+      "sha256": "7dc49312ac775ac849720e6a413296172cafb34891118896399431bf092e3774"
+    },
+    {
+      "path": "examples/compat/constants.inc",
+      "bytes": 47,
+      "sha256": "550dbdbf3092149812bcb35b20c80c590ee75c3052a02cbc36380a74b7c6367f"
+    },
+    {
+      "path": "examples/compat/main.cpp",
+      "bytes": 1709,
+      "sha256": "042788e90193f654e823aa425d7e06c496555b38ac98a8e7f957cdc7e17b175c"
+    },
+    {
+      "path": "examples/compat/module.cpp",
+      "bytes": 844,
+      "sha256": "d76c0ec25e9624f3dcb435fe2081aa825a3cda72db26d09ba39ed548c8fbb5c5"
+    },
+    {
+      "path": "examples/compat/shared.h",
+      "bytes": 923,
+      "sha256": "29e66eabd53b9571dc3928046437487d445f68b54159e4a93fb0db60ac0d68ef"
+    },
+    {
+      "path": "examples/compat17.json",
+      "bytes": 301,
+      "sha256": "4bb2632dc4079afbc529c56d2135289d6a91ffe37df7cc88038171fecd94b00d"
+    },
+    {
+      "path": "include/wuxiang/protect.h",
+      "bytes": 397,
+      "sha256": "3207dadd40baadca9fb2ea89f2cc087021bd307133e4d2ef2db76a6555b17d48"
+    },
+    {
+      "path": "licenses/LLVM-LICENSE.txt",
+      "bytes": 15141,
+      "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
+    },
+    {
+      "path": "python/wuxiang/__init__.py",
+      "bytes": 73,
+      "sha256": "487ee8ec8557091de95375dde1854dab46872518c58f3e0d07bf608dfc2f1c65"
+    },
+    {
+      "path": "python/wuxiang/__main__.py",
+      "bytes": 1674,
+      "sha256": "e6920b8f511df7d08a9ee26cf0d9b11f47c7fe590187ccf57dcb53632de02380"
+    },
+    {
+      "path": "python/wuxiang/bench.py",
+      "bytes": 25573,
+      "sha256": "1c55fe6a5bc3942168193fc22cfe09865bb7541088cfcb29f88cfad907a1d81a"
+    },
+    {
+      "path": "python/wuxiang/build.py",
+      "bytes": 19372,
+      "sha256": "7d8cb8d54f780bf3041aaa76fa4cf542e52ab40460c754db8f04fe44f0569658"
+    },
+    {
+      "path": "python/wuxiang/environment.py",
+      "bytes": 3581,
+      "sha256": "1514bc7da55da6d97bc11e98e9d2c5b550f11a72806933e8014e6a07a76114e7"
+    },
+    {
+      "path": "src/transform.cpp",
+      "bytes": 12232,
+      "sha256": "c8e461144299862a4771d4b3b181e8b9c86f69c8a3f8060b37cd46db19443930"
+    },
+    {
+      "path": "tests/ir/arithmetic.ll",
+      "bytes": 775,
+      "sha256": "372c6c39c7aecda118b844ec087e87213e4921073fdb0e3cc0344d54e2b0cb33"
+    },
+    {
+      "path": "tests/ir/attributes.ll",
+      "bytes": 383,
+      "sha256": "875684687695fb6741ba1ec8862ffc535240020b8003609a3ea7ec987a514c2b"
+    },
+    {
+      "path": "tests/ir/boolean.ll",
+      "bytes": 564,
+      "sha256": "9c65859d6b4a6642d66da8f169e8c353c796f0913ee77924656bba7c6fe5f4ec"
+    },
+    {
+      "path": "tests/ir/eh.ll",
+      "bytes": 274,
+      "sha256": "30652fd3e9fe8711e81d155d3ba626400a810d5367ee41fc3085219132809282"
+    },
+    {
+      "path": "tests/ir/identity.ll",
+      "bytes": 151,
+      "sha256": "3c84b5fd9598bae9c5017726ff930865ccfee0e5b665bc9564b1ea68c550faff"
+    },
+    {
+      "path": "tests/ir/loop.ll",
+      "bytes": 1332,
+      "sha256": "c1436b96dd274e3b101f0984f19777c0d93241a42eebb7ff6a85642d8417059a"
+    },
+    {
+      "path": "tests/ir/poison.ll",
+      "bytes": 207,
+      "sha256": "59c116114eb81c3e641a08be1044dd6d157b42dc1cb81c64fb91b06a11ccef4a"
+    },
+    {
+      "path": "tests/native/eh.cpp",
+      "bytes": 763,
+      "sha256": "a976de4c2ff89963228fedae6941a333e0fc8875d8bb998d5815b1c469789beb"
+    },
+    {
+      "path": "tests/test_bench.py",
+      "bytes": 9787,
+      "sha256": "431755ee39f27d50c146228786b28fbea55256cb853e6e67f3f5106b70981b25"
+    },
+    {
+      "path": "tests/test_config.py",
+      "bytes": 2126,
+      "sha256": "fa8b84b5d9f4aa7a512618a38bd41629655555885477f5c7cd95d35accf707d3"
+    },
+    {
+      "path": "tests/test_native.py",
+      "bytes": 894,
+      "sha256": "5d423caada95f9a50a426473bad4c500831a15f0c2a9f2de77f43b5202629f39"
+    },
+    {
+      "path": "tests/test_transformer.py",
+      "bytes": 9719,
+      "sha256": "5fd749b2348ddf509f2b7ec27d04202e67f2f74f32ed96e1cef267be1b5f0913"
+    },
+    {
+      "path": "tools/audit_source.py",
+      "bytes": 3726,
+      "sha256": "d55e09dde26b306c9105d12e83710cdf95e9ba7a26742c96db0c7fe064948826"
+    },
+    {
+      "path": "tools/bootstrap_llvm.py",
+      "bytes": 2380,
+      "sha256": "c0fe014bc0265ef95e548fa0ffccaf5ad54033110f09334aaa22d827c07dad48"
+    },
+    {
+      "path": "tools/build_benchmark.py",
+      "bytes": 3651,
+      "sha256": "b573396a9f3f2519c55c2308e7bdfec7df07b62ab6494037838b6d030a8c0c8f"
+    },
+    {
+      "path": "tools/rea_probe.py",
+      "bytes": 2799,
+      "sha256": "04ab014dd3fa0f111cf0a9c13b6387296edef8858c27a0caa64ddc0b95bbcc4f"
+    },
+    {
+      "path": "wuxiang.py",
+      "bytes": 176,
+      "sha256": "5db27f7f82072b2ec08df5e661f82a937adf28a04f6a3476ca0a9db4b9abc89c"
+    }
+  ],
+  "exclusions": [
+    "toolchains",
+    "native binaries",
+    "private evidence",
+    "attack sessions",
+    "hidden scoring packs"
+  ]
+}

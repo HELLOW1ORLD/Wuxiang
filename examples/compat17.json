@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "mode": "balanced",
+  "standard": "c++17",
+  "seed": 11,
+  "module": {"sources": ["compat/module.cpp"]},
+  "main": {"sources": ["compat/main.cpp"]},
+  "include_dirs": ["compat"],
+  "output_dir": "../build/compat17",
+  "verification": {"expected_stdout": "WUXIANG_ABI_OK"}
+}
