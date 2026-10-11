@@ -17,6 +17,7 @@
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/Support/raw_ostream.h"
 #include <algorithm>
+#include <cctype>
 #include <cstdint>
 #include <random>
 #include <set>
@@ -30,6 +31,34 @@ static cl::opt<std::string> Report("report", cl::Required, cl::desc("Coverage JS
 static cl::opt<uint64_t> Seed("seed", cl::init(1), cl::desc("Diversification seed"));
 static cl::opt<std::string> Functions("functions", cl::init(""), cl::desc("Comma-separated exact LLVM symbol names"));
 static cl::opt<std::string> Mode("mode", cl::init("balanced"));
+static cl::opt<std::string> SurfaceSymbol("surface-symbol", cl::init(""));
+static cl::opt<std::string> SurfaceOffsets("surface-offsets", cl::init(""));
+static void invalidateMemoryFacts(Function &F);
+
+static void addSurfaceReferences(Function &F, ArrayRef<uint64_t> Offsets) {
+  Module &M = *F.getParent();
+  auto *Byte = Type::getInt8Ty(M.getContext());
+  auto *Data = M.getNamedGlobal(SurfaceSymbol.getValue());
+  if (!Data)
+    Data = new GlobalVariable(M, Byte, true, GlobalValue::ExternalLinkage,
+                              nullptr, SurfaceSymbol.getValue());
+  // Keep the text pointer visible as an argument to a separate noinline reader.
+  // The generated noexcept C++ reader only performs a volatile byte read.
+  auto *ReaderType = FunctionType::get(Type::getVoidTy(M.getContext()),
+                                      {PointerType::getUnqual(M.getContext())}, false);
+  FunctionCallee Reader = M.getOrInsertFunction(SurfaceSymbol.getValue() + "_read", ReaderType);
+  auto *ReaderFunction = cast<Function>(Reader.getCallee());
+  ReaderFunction->addFnAttr(Attribute::NoUnwind);
+  ReaderFunction->addFnAttr(Attribute::WillReturn);
+  IRBuilder<> B(&*F.getEntryBlock().getFirstInsertionPt());
+  for (uint64_t Offset : Offsets) {
+    // Non-inbounds GEP: the external array is defined in a separate COFF object.
+    auto *Pointer = B.CreateGEP(Byte, Data, B.getInt64(Offset), "wx.hint.address");
+    auto *Call = B.CreateCall(Reader, {Pointer});
+    Call->setDoesNotThrow();
+  }
+  invalidateMemoryFacts(F);
+}
 
 static void annotationNames(Module &M, std::set<std::string> &Names) {
   auto *G = M.getGlobalVariable("llvm.global.annotations");
@@ -208,6 +237,27 @@ int main(int argc, char **argv) {
     return 2;
   }
   if (Mode != "balanced") Errors.push_back("Only balanced mode is supported");
+  SmallVector<uint64_t> HintOffsets;
+  if (SurfaceSymbol.getValue().empty() != SurfaceOffsets.getValue().empty())
+    Errors.push_back("Surface symbol and offsets must be specified together");
+  if (!SurfaceSymbol.getValue().empty()) {
+    const std::string &S = SurfaceSymbol.getValue();
+    if (S.size() > 64 || !(std::isalpha(static_cast<unsigned char>(S[0])) || S[0] == '_') ||
+        !std::all_of(S.begin(), S.end(), [](unsigned char C) {
+          return C < 128 && (std::isalnum(C) || C == '_');
+        })) Errors.push_back("Invalid surface symbol");
+    if (M->getNamedValue(S) || M->getNamedValue(S + "_read"))
+      Errors.push_back("Surface symbol collides with input module");
+    SmallVector<StringRef> Parts;
+    StringRef(SurfaceOffsets.getValue()).split(Parts, ',');
+    for (StringRef Part : Parts) {
+      uint64_t Offset = 0;
+      if (Part.empty() || Part.getAsInteger(10, Offset) || Offset > 65535)
+        Errors.push_back("Invalid surface offset");
+      else HintOffsets.push_back(Offset);
+    }
+    if (HintOffsets.size() > 16) Errors.push_back("Too many surface references");
+  }
   std::set<std::string> Names;
   annotationNames(*M, Names);
   SmallVector<StringRef> Explicit;
@@ -218,7 +268,7 @@ int main(int argc, char **argv) {
   for (const std::string &Name : Names) {
     json::Array Reasons;
     Function *F = M->getFunction(Name);
-    int64_t Ints = 0, Regions = 0;
+    int64_t Ints = 0, Regions = 0, Hints = 0;
     int64_t OriginalBlocks = F ? static_cast<int64_t>(F->size()) : 0;
     int64_t EligibleIntegers = 0;
     std::string Status = "unsupported";
@@ -243,13 +293,17 @@ int main(int argc, char **argv) {
         Reasons.push_back("No transformable site survived optimization");
         Errors.push_back("Untransformable function: " + Name);
       } else {
+        if (!HintOffsets.empty() && Errors.empty()) {
+          addSurfaceReferences(*F, HintOffsets);
+          Hints = static_cast<int64_t>(HintOffsets.size());
+        }
         F->addFnAttr(Attribute::NoInline);
         Reasons.push_back("V1 transforms bounded sites; it does not cover the entire function");
         Status = "partial";
       }
     }
     Results.push_back(json::Object{{"name", Name}, {"status", Status},
-      {"transformations", json::Object{{"integer_substitutions", Ints}, {"block_splits", Regions}, {"control_regions", Regions}}},
+      {"transformations", json::Object{{"integer_substitutions", Ints}, {"block_splits", Regions}, {"control_regions", Regions}, {"surface_references", Hints}}},
       {"coverage", json::Object{{"original_blocks", OriginalBlocks}, {"rewritten_blocks", Regions},
         {"eligible_integer_sites", EligibleIntegers}, {"rewritten_integer_sites", Ints}, {"whole_function", false}}},
       {"reasons", std::move(Reasons)}});

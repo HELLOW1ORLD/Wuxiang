@@ -1,5 +1,15 @@
 # Reported observations and acceptance limits
 
+## 0.1.1 agent-surface engineering checks (2026-10-11)
+
+The opt-in `examples/compat-surfaces.json` build passed 30 local tests, including actual COFF relocation retention, PE payload inspection, MSVC/Clang behavior and ABI checks, and exceptions/destructors with surface references. One local verification run measured selected-function runtime at 1.0386× baseline, protected-module code at 1.0139× baseline, and the complete executable at +1536 bytes. Both balanced caps passed. These are local samples, not portable overhead guarantees.
+
+The final executable contained a 374-byte read-only payload with one marker prompt and one synthetic UTF-8 description. No agent recovery sessions were conducted against this version. Prompt following, semantic mistakes and increased recovery cost remain unmeasured. See the [implemented feature guide](agent-surfaces.zh-CN.md).
+
+A local REA 6.2.0 / Ghidra 12.1.4 focused decompilation displayed both text entries as arguments to the separate reader calls in the selected function. This establishes tool-output visibility for this one artifact/provider, not agent obedience or increased recovery cost. Direct unused byte reads had been omitted by the decompiler; the delivered build uses separate noinline readers instead.
+
+## Earlier 0.1.0 observations
+
 This source release exposes implementation, tests and synthetic fixtures. Private machine-specific reports, attack sessions and the original shipped-artifact recovery evidence are excluded. The figures below summarize the developer's local observations dated 2026-10-10; this repository alone does not independently attest the original pilot or reproduce its elapsed times.
 
 | Check | Reported observation |

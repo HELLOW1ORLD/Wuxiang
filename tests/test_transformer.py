@@ -9,6 +9,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'python'))
 from wuxiang.build import tool_paths, function_code
+from wuxiang.artifact_surface import prepare_surface, inspect_surface
 
 
 class TransformerTests(unittest.TestCase):
@@ -27,13 +28,13 @@ class TransformerTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return result.stdout
 
-    def transform_file(self, source, symbol, seed, stem, expect_success=True):
+    def transform_file(self, source, symbol, seed, stem, expect_success=True, extra=()):
         bc, report = self.out / (stem + '.bc'), self.out / (stem + '.json')
         if bc.exists():
             bc.unlink()
         result = subprocess.run([str(self.transform), str(source), '-o', str(bc),
                                 '--report', str(report), '--functions', symbol,
-                                '--seed', str(seed)], env=self.env, capture_output=True,
+                                '--seed', str(seed), *extra], env=self.env, capture_output=True,
                                 text=True, encoding='utf-8', errors='replace', timeout=180)
         self.assertEqual(result.returncode == 0, expect_success, result.stderr)
         data = json.loads(report.read_text(encoding='utf-8'))
@@ -41,10 +42,10 @@ class TransformerTests(unittest.TestCase):
         self.assertEqual(bc.exists(), expect_success)
         return bc, data
 
-    def native(self, bc, stem):
+    def native(self, bc, stem, extra_objects=()):
         obj, exe = self.out / (stem + '.obj'), self.out / (stem + '.exe')
         self.run_tool([self.tools['llc'], '-O=2', '-filetype=obj', bc, '-o', obj])
-        self.run_tool([self.tools['link'], '/nologo', obj, '/out:' + str(exe),
+        self.run_tool([self.tools['link'], '/nologo', obj, *extra_objects, '/out:' + str(exe),
                        '/subsystem:console', '/defaultlib:msvcrt',
                        '/defaultlib:vcruntime', '/defaultlib:ucrt', '/defaultlib:kernel32'])
         self.run_tool([exe])
@@ -62,6 +63,28 @@ class TransformerTests(unittest.TestCase):
                     obj = self.native(bc, stem)
                     self.assertTrue(report['verified'])
                     self.assertNotEqual(function_code(self.tools, obj, self.env)[symbol], baseline)
+
+    def test_surface_references_survive_codegen_and_have_valid_memory_facts(self):
+        bc = self.out / 'surface.bc'
+        report = self.out / 'surface.json'
+        self.run_tool([self.transform, ROOT / 'tests/ir/attributes.ll', '-o', bc,
+                       '--report', report, '--functions', 'effect',
+                       '--surface-symbol', 'wx_surface_test', '--surface-offsets', '20,100'])
+        row = json.loads(report.read_text())['functions'][0]
+        self.assertEqual(row['transformations']['surface_references'], 2)
+        dis = Path(self.tools['llc']).with_name('llvm-dis.exe')
+        ir = self.run_tool([dis, bc, '-o', '-'])
+        self.assertIn('call void @wx_surface_test_read', ir)
+        self.assertNotIn('memory(none)', ir)
+        self.assertNotIn('nosync', ir)
+        opt = Path(self.tools['llc']).with_name('opt.exe')
+        optimized = self.out / 'surface.optimized.bc'
+        self.run_tool([opt, '-passes=default<O2>', bc, '-o', optimized])
+        obj = self.out / 'surface.obj'
+        self.run_tool([self.tools['llc'], '-O=2', '-filetype=obj', optimized, '-o', obj])
+        relocations = self.run_tool([self.tools['objdump'], '--reloc', obj])
+        self.assertIn('wx_surface_test', relocations)
+        self.assertIn('wx_surface_test_read', relocations)
 
     def test_missing_and_untransformable_functions_fail_explicitly(self):
         for fixture, symbol in [('arithmetic', 'absent'), ('identity', 'identity'),
@@ -87,6 +110,20 @@ class TransformerTests(unittest.TestCase):
         protected = self.native(bc, 'eh-protected')
         self.assertNotEqual(function_code(self.tools, ref, self.env)[symbol],
                             function_code(self.tools, protected, self.env)[symbol])
+        # Entry references must also preserve unwinding through real EH regions.
+        surface = prepare_surface({'experimental': True, 'prompt_injection': 'marker',
+                                   'semantic_decoy': 'checksum'}, 11)
+        sidecar = self.out / 'eh-surface.cpp'
+        surface_obj = self.out / 'eh-surface.obj'
+        sidecar.write_text(surface.cpp_source(), encoding='utf-8')
+        self.run_tool([self.tools['cl'], '/nologo', '/O2', '/MD', '/EHsc', '/c',
+                       '/Fo' + str(surface_obj), sidecar])
+        surfaced, row = self.transform_file(original, symbol, 11, 'eh-surfaces', extra=(
+            '--surface-symbol', surface.symbol, '--surface-offsets',
+            ','.join(str(e['offset']) for e in surface.entries)))
+        self.assertEqual(row['functions'][0]['transformations']['surface_references'], 2)
+        self.native(surfaced, 'eh-surfaces', (surface_obj,))
+        self.assertTrue(inspect_surface(self.out / 'eh-surfaces.exe')['present'])
 
     def test_volatile_effects_invalidate_callsite_and_function_attributes(self):
         bc, _ = self.transform_file(ROOT / 'tests/ir/attributes.ll', 'effect', 7, 'attributes')

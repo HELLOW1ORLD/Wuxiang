@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "Wuxiang",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "source_only": true,
   "license": "MIT",
   "copyright_holder": "HELLOW1ORLD",
@@ -27,56 +27,6 @@
       "sha256": "0f624d778f3d843a7a004d532d95111512ebaaf35c6d4317c4266d0d79550353"
     },
     {
-      "path": "CHANGELOG.md",
-      "bytes": 623,
-      "sha256": "1119bf513a107fbc5c61bc9590866b2c43f097435b04e4373f41b9521dcd9298"
-    },
-    {
-      "path": "CMakeLists.txt",
-      "bytes": 2456,
-      "sha256": "76b27999843687ea93e0259a0f350e96d2eb88956acf3792357673535900a0dd"
-    },
-    {
-      "path": "CONTRIBUTING.md",
-      "bytes": 1332,
-      "sha256": "c611e3de099c747525f8266ae6bdaf6f31cdf38b800e59aaa73c49de013ec620"
-    },
-    {
-      "path": "LICENSE",
-      "bytes": 1068,
-      "sha256": "f95ac62bee511ee8ae3aa2c7f2fe331f7c0828dd8afeb265707d9088a5f45502"
-    },
-    {
-      "path": "README.md",
-      "bytes": 4392,
-      "sha256": "7a772ea9969918c080867f92894cc2933cfe1462f7007b92c35d10a311d408a2"
-    },
-    {
-      "path": "README.zh-CN.md",
-      "bytes": 2727,
-      "sha256": "92a268c121639c7566e846e493c0ff57e4d72974688b2812d33515d312b38156"
-    },
-    {
-      "path": "SECURITY.md",
-      "bytes": 926,
-      "sha256": "f6767e382a0e2011ad7e1264c2a5d67dff0fcdf457eb3dad5588b84799480024"
-    },
-    {
-      "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 1344,
-      "sha256": "bd38e8167f67cb7b0247dd04de2207381d486c1a35896a1922fc9d7991ca647a"
-    },
-    {
-      "path": "bench-config.json",
-      "bytes": 215,
-      "sha256": "75792f61fcb11108bb9776d83e13221a8750ecad8498b091600cfc3b5d1e13cf"
-    },
-    {
-      "path": "bench-research-config.json",
-      "bytes": 264,
-      "sha256": "e678ec370ac6f1f883c0b72021ec091ee20705a6df90f62662e1ebb628037d29"
-    },
-    {
       "path": "bench/harness.cpp",
       "bytes": 2554,
       "sha256": "bb238abbc816f5e2d060b2d2f3a45e9bb96fe60917f8b7b8e61d452284233b65"
@@ -92,9 +42,39 @@
       "sha256": "9317536797c216dfb5dd1e642dda211ef4e98cd31bb995eab106204c1cdcd39f"
     },
     {
+      "path": "bench-config.json",
+      "bytes": 203,
+      "sha256": "0480166412f5fa38bd2f652b8d46167b2ad76068de5c96e26254a5aa5b3017f6"
+    },
+    {
+      "path": "bench-research-config.json",
+      "bytes": 252,
+      "sha256": "65f8c8cf25a2bc1c19e8158e7e7ea55f11ab2a1f86e39ef7db78d9ca70ba3042"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 1258,
+      "sha256": "f163f89a08f9daebecae7eb0561a2ddca5d98e09846ca240cfe8d02a7402a6b4"
+    },
+    {
       "path": "cmake/Wuxiang.cmake",
       "bytes": 5216,
       "sha256": "6e7d7b3cf0a9632b5362bb49bb8d6917991298127e5e739771eedf033f784868"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "bytes": 2456,
+      "sha256": "6f972e365d8a96b720a6228eca93d748eb3b29d5e90fa98a24e07ce26d5f6080"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 1332,
+      "sha256": "c611e3de099c747525f8266ae6bdaf6f31cdf38b800e59aaa73c49de013ec620"
+    },
+    {
+      "path": "docs/agent-surfaces.zh-CN.md",
+      "bytes": 5866,
+      "sha256": "3ce80a056073d235e51ca271f87ac26dc77666230a574a4608628ab12728496d"
     },
     {
       "path": "docs/cmake-adapter.md",
@@ -112,9 +92,14 @@
       "sha256": "48e39ecf90c49b33e86ce536787edfd548d3cf9d27c802d7774ddb165f0a0049"
     },
     {
+      "path": "docs/next-phase-design.zh-CN.md",
+      "bytes": 19441,
+      "sha256": "3a7d074d5ceb68e16b33bf8f5f22873c498c5be1f6d99dba8ada5dea475c9ee9"
+    },
+    {
       "path": "docs/results.md",
-      "bytes": 3703,
-      "sha256": "831bdfefb137d461a78d6e7239e4d139dae5bd9407c153d5c859d2eb79bed1bc"
+      "bytes": 5000,
+      "sha256": "5f3660a6544270c26b84384f590adc8c764428bddfeaf848fb31ae06f8196d57"
     },
     {
       "path": "docs/reverse-engineering-lessons.md",
@@ -123,13 +108,8 @@
     },
     {
       "path": "docs/usage.zh-CN.md",
-      "bytes": 6754,
-      "sha256": "4f41833dc60933e7484a0e615e09e7c9de8167039fd2ad29f7a8512911114ce0"
-    },
-    {
-      "path": "examples/compat.json",
-      "bytes": 299,
-      "sha256": "7dc49312ac775ac849720e6a413296172cafb34891118896399431bf092e3774"
+      "bytes": 6913,
+      "sha256": "a05e4d863f4054867c1eea78f4ec2e52d7326033126bf50adfbc4a863d3295e9"
     },
     {
       "path": "examples/compat/constants.inc",
@@ -152,6 +132,16 @@
       "sha256": "29e66eabd53b9571dc3928046437487d445f68b54159e4a93fb0db60ac0d68ef"
     },
     {
+      "path": "examples/compat-surfaces.json",
+      "bytes": 453,
+      "sha256": "994ff3033f2c0bc745f4d5e3becbaee19dd403568e77acf1752c414b713d3f4e"
+    },
+    {
+      "path": "examples/compat.json",
+      "bytes": 299,
+      "sha256": "7dc49312ac775ac849720e6a413296172cafb34891118896399431bf092e3774"
+    },
+    {
       "path": "examples/compat17.json",
       "bytes": 301,
       "sha256": "4bb2632dc4079afbc529c56d2135289d6a91ffe37df7cc88038171fecd94b00d"
@@ -162,6 +152,11 @@
       "sha256": "3207dadd40baadca9fb2ea89f2cc087021bd307133e4d2ef2db76a6555b17d48"
     },
     {
+      "path": "LICENSE",
+      "bytes": 1068,
+      "sha256": "f95ac62bee511ee8ae3aa2c7f2fe331f7c0828dd8afeb265707d9088a5f45502"
+    },
+    {
       "path": "licenses/LLVM-LICENSE.txt",
       "bytes": 15141,
       "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
@@ -169,12 +164,17 @@
     {
       "path": "python/wuxiang/__init__.py",
       "bytes": 73,
-      "sha256": "487ee8ec8557091de95375dde1854dab46872518c58f3e0d07bf608dfc2f1c65"
+      "sha256": "60c9e48dd039ffe1ed70bf9ce31503e198ff85af5026c4d9d1c93fc0ebf7c612"
     },
     {
       "path": "python/wuxiang/__main__.py",
-      "bytes": 1674,
-      "sha256": "e6920b8f511df7d08a9ee26cf0d9b11f47c7fe590187ccf57dcb53632de02380"
+      "bytes": 2025,
+      "sha256": "e8022460cf9fdca94c9a104664620af45db601174b59d2dbc37720736b4c24c7"
+    },
+    {
+      "path": "python/wuxiang/artifact_surface.py",
+      "bytes": 7429,
+      "sha256": "f9c011f283f6870453aeccf869a0001785bd8a59761b3812d38755f54c354404"
     },
     {
       "path": "python/wuxiang/bench.py",
@@ -183,18 +183,33 @@
     },
     {
       "path": "python/wuxiang/build.py",
-      "bytes": 19372,
-      "sha256": "7d8cb8d54f780bf3041aaa76fa4cf542e52ab40460c754db8f04fe44f0569658"
+      "bytes": 21951,
+      "sha256": "44561639783c81f5b83edde85942c9cc143118b56028fbdeab76c73b262ed12f"
     },
     {
       "path": "python/wuxiang/environment.py",
-      "bytes": 3581,
-      "sha256": "1514bc7da55da6d97bc11e98e9d2c5b550f11a72806933e8014e6a07a76114e7"
+      "bytes": 3746,
+      "sha256": "56ea1a0731b47936cc9a2078cdfc8dd0c1393659564e06a81997191ab7ca4387"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7094,
+      "sha256": "041d781917cb03eb823e20b4cfe445b9584280e26c4b6685d7716aa899340b12"
+    },
+    {
+      "path": "README.zh-CN.md",
+      "bytes": 5526,
+      "sha256": "d7b7266a66d0d976f28beee1a0e018847fc6cd4964ae405de07054c666ae7e04"
+    },
+    {
+      "path": "SECURITY.md",
+      "bytes": 926,
+      "sha256": "f6767e382a0e2011ad7e1264c2a5d67dff0fcdf457eb3dad5588b84799480024"
     },
     {
       "path": "src/transform.cpp",
-      "bytes": 12232,
-      "sha256": "c8e461144299862a4771d4b3b181e8b9c86f69c8a3f8060b37cd46db19443930"
+      "bytes": 15092,
+      "sha256": "e32f31d23506cac2df47ae88a914fe91d008043dedb8fb5e50e8b3663fa076f0"
     },
     {
       "path": "tests/ir/arithmetic.ll",
@@ -237,6 +252,11 @@
       "sha256": "a976de4c2ff89963228fedae6941a333e0fc8875d8bb998d5815b1c469789beb"
     },
     {
+      "path": "tests/test_artifact_surface.py",
+      "bytes": 5130,
+      "sha256": "1edea4d12fafbe17e1b422708be7af96d34343bfdb8d830bd4f8e8ff39d357a5"
+    },
+    {
       "path": "tests/test_bench.py",
       "bytes": 9787,
       "sha256": "431755ee39f27d50c146228786b28fbea55256cb853e6e67f3f5106b70981b25"
@@ -252,9 +272,19 @@
       "sha256": "5d423caada95f9a50a426473bad4c500831a15f0c2a9f2de77f43b5202629f39"
     },
     {
+      "path": "tests/test_surface_native.py",
+      "bytes": 2934,
+      "sha256": "940325c45da85631a02ba7a5f80e1cba888b3bd5eff2479d4bf50d193af08e60"
+    },
+    {
       "path": "tests/test_transformer.py",
-      "bytes": 9719,
-      "sha256": "5fd749b2348ddf509f2b7ec27d04202e67f2f74f32ed96e1cef267be1b5f0913"
+      "bytes": 12145,
+      "sha256": "7e2ffb2ebef27ec7e7c87e761fc2425ba8952082993f34bdb81399e47d1291b0"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 1344,
+      "sha256": "bd38e8167f67cb7b0247dd04de2207381d486c1a35896a1922fc9d7991ca647a"
     },
     {
       "path": "tools/audit_source.py",
@@ -273,8 +303,8 @@
     },
     {
       "path": "tools/rea_probe.py",
-      "bytes": 2799,
-      "sha256": "04ab014dd3fa0f111cf0a9c13b6387296edef8858c27a0caa64ddc0b95bbcc4f"
+      "bytes": 2956,
+      "sha256": "200aa58dc7b8547582d222d148adf34090b6fb055941b0e0c6d3f0802cdb0d35"
     },
     {
       "path": "wuxiang.py",

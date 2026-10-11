@@ -40,15 +40,17 @@ def doctor():
             report['errors'].append('Required SDK/CRT headers or libraries missing')
     packages = Path(os.environ.get('LOCALAPPDATA', '')) / 'npm-cache/_npx'
     rea = []
-    for path in packages.glob('*/node_modules/rea-agents/package.json'):
+    local = ROOT / 'toolchain/analysis/rea-agents-6.2.0/node_modules/rea-agents/package.json'
+    candidates = ([local] if local.is_file() else []) + list(packages.glob('*/node_modules/rea-agents/package.json'))
+    for path in candidates:
         try:
             metadata = json.loads(path.read_text(encoding='utf-8'))
             rea.append({'version': metadata.get('version'),
                         'cli': str(path.parent / 'scripts/rea.mjs')})
         except (OSError, ValueError):
             continue
-    ghidra = ROOT.parent / 'Tools/Native/ghidra_12.1.4_PUBLIC'
-    java = ROOT.parent / 'Tools/Native/jdk-21.0.12.1+1/bin/java.exe'
+    ghidra = ROOT / 'toolchain/analysis/ghidra_12.1.4_PUBLIC'
+    java = ROOT / 'toolchain/analysis/jdk-21.0.12.1+1/bin/java.exe'
     node = shutil.which('node.exe')
     ghidra_properties = ghidra / 'Ghidra/application.properties'
     ghidra_version = None

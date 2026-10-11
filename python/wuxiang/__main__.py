@@ -9,6 +9,8 @@ def main():
     parser=argparse.ArgumentParser(prog='wuxiang')
     commands=parser.add_subparsers(dest='command',required=True)
     commands.add_parser('doctor')
+    surface=commands.add_parser('surface'); actions=surface.add_subparsers(dest='action',required=True)
+    inspect=actions.add_parser('inspect');inspect.add_argument('--artifact',type=Path,required=True)
     for name in ('protect','verify'):
         p=commands.add_parser(name);p.add_argument('--config',type=Path,required=True)
     p=commands.add_parser('bench'); sub=p.add_subparsers(dest='action',required=True)
@@ -18,6 +20,9 @@ def main():
     args=parser.parse_args()
     try:
         if args.command=='doctor': result=doctor()
+        elif args.command=='surface':
+            from .artifact_surface import inspect_surface
+            result=inspect_surface(args.artifact)
         elif args.command=='protect': result=protect(args.config)
         elif args.command=='verify': result=verify(args.config)
         else:

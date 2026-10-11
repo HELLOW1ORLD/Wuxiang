@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.1 — opt-in agent surfaces
+
+- Fixed harmless prompt-injection marker and authorization-notice presets; three synthetic semantic-decoy presets.
+- Configured read-only PE payloads, selected-function volatile references, protected-only linking and SHA-256 evidence.
+- `surface inspect`, stale-build checks and payload verification integrated with CLI builds; CMake surface options remain unimplemented.
+- Native COFF/PE, behavior/ABI, EH unwind and malformed-input regression coverage.
+
+Agent exposure, prompt-following and increased recovery cost remain unmeasured. This is an engineering increment, not an effectiveness claim.
+
 ## 0.1.0 — source release candidate
 
 - Standalone seeded LLVM IR transform and MSVC/Clang mixed-build pipeline.

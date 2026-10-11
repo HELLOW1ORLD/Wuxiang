@@ -9,6 +9,7 @@ import statistics
 import struct
 import subprocess
 import time
+from .artifact_surface import prepare_surface, inspect_surface
 
 ROOT = Path(__file__).resolve().parents[2]
 LLVM = ROOT / 'toolchain/clang+llvm-20.1.8-x86_64-pc-windows-msvc'
@@ -30,6 +31,7 @@ def load_config(path):
     c = json.loads(path.read_text(encoding='utf-8-sig'))
     if c.get('schema_version') != 1: raise ValueError('Expected config schema_version=1')
     if c.get('mode', 'balanced') != 'balanced': raise ValueError('Only balanced mode is supported')
+    prepare_surface(c.get('agent_surface'), c.get('seed', 11))
     for part in ('module', 'main'):
         if not c.get(part, {}).get('sources'): raise ValueError('Missing ' + part + '.sources')
         c[part]['sources'] = [str((path.parent / p).resolve()) for p in c[part]['sources']]
@@ -61,7 +63,8 @@ def build_identity(c, compiler_dependencies=()):
             for suffix in ('*.h','*.hpp','*.hxx','*.inl','*.inc'):
                 paths.update(directory.rglob(suffix))
     paths.update(Path(p) for p in compiler_dependencies)
-    paths.update([ROOT/'src/transform.cpp',ROOT/'CMakeLists.txt',Path(__file__)])
+    paths.update([ROOT/'src/transform.cpp',ROOT/'CMakeLists.txt',Path(__file__),
+                  Path(__file__).with_name('artifact_surface.py')])
     identity={k:v for k,v in c.items() if k not in ('config_path','verification')}
     return {'config_sha256':hashlib.sha256(json.dumps(identity,sort_keys=True).encode()).hexdigest(),
             'dependencies':[{'path':str(p),'sha256':sha256(p)} for p in sorted(paths)]}
@@ -207,13 +210,24 @@ def protect(config):
         run([tools['cl'],*common,src,'/Fo'+str(obj),'/sourceDependencies',dep],env,cwd=out,log=out/f'main{i}.log'); main.append(obj)
         dependencies+=json.loads(dep.read_text(encoding='utf-8-sig'))['Data']['Includes']
     objects={v:[] for v in ('baseline','protected','msvc')}; coverage=[]; inputs=[]
+    surface = prepare_surface(c.get('agent_surface'), c.get('seed', 11))
+    surface_args = []
+    if surface:
+        source = out / 'agent-surface.cpp'
+        source.write_text(surface.cpp_source(), encoding='utf-8')
+        obj = out / 'agent-surface.obj'
+        run([tools['cl'], *common, source, '/Fo'+str(obj)], env, cwd=out,
+            log=out/'agent-surface-compile.log')
+        objects['protected'].append(obj)
+        surface_args = ['--surface-symbol', surface.symbol, '--surface-offsets',
+                        ','.join(str(e['offset']) for e in surface.entries)]
     for i,src in enumerate(c['module']['sources']):
         inputs.append({'path':src,'sha256':sha256(src)})
         bc=out/f'module{i}.bc'; pbc=out/f'module{i}.protected.bc'; rep=out/f'module{i}.coverage.json'
         dep=out/f'module{i}.d'
         run([tools['clang'],*common,src,'/clang:-emit-llvm','/clang:-o','/clang:'+str(bc),'/clang:-MD','/clang:-MF','/clang:'+str(dep)],env,cwd=out,log=out/f'clang{i}.log')
         dependencies+=make_dependencies(dep)
-        args=[tools['transform'],bc,'-o',pbc,'--report',rep,'--seed',str(c.get('seed',11)),'--mode','balanced']
+        args=[tools['transform'],bc,'-o',pbc,'--report',rep,'--seed',str(c.get('seed',11)),'--mode','balanced',*surface_args]
         if c['module'].get('functions'): args += ['--functions',','.join(c['module']['functions'])]
         run(args,env,log=out/f'transform{i}.log')
         report=json.loads(rep.read_text(encoding='utf-8')); coverage.append(report)
@@ -229,9 +243,24 @@ def protect(config):
     binaries={}
     for variant,objs in objects.items():
         exe=out/(variant+'.exe')
+        surface_link = ['/INCLUDE:'+surface.symbol] if surface and variant=='protected' else []
         run([tools['cl'],'/nologo','/MD',*main,*objs,'/Fe'+str(exe),'/link','/INCREMENTAL:NO','/OPT:REF','/OPT:ICF',
-             '/MAP:'+str(out/(variant+'.map')),*['/EXPORT:'+name for name in c.get('exports',[])]],env,cwd=out,log=out/f'link-{variant}.log')
-        binaries[variant]={'path':str(exe),'sha256':sha256(exe),'module_code_size':sum(code_size(o) for o in objs)}
+             '/MAP:'+str(out/(variant+'.map')),*surface_link,*['/EXPORT:'+name for name in c.get('exports',[])]],env,cwd=out,log=out/f'link-{variant}.log')
+        binaries[variant]={'path':str(exe),'sha256':sha256(exe),'module_code_size':sum(code_size(o) for o in objs),
+                          'file_size':exe.stat().st_size}
+    surface_evidence = inspect_surface(binaries['protected']['path'])
+    surface_evidence['requested'] = surface is not None
+    surface_evidence['function_references'] = sum(f['transformations'].get('surface_references',0) for r in coverage for f in r['functions'])
+    if surface:
+        if not surface_evidence['present'] or surface_evidence['payload_sha256'] != surface.sha256:
+            raise RuntimeError('Requested agent surface did not survive final linking')
+        expected = len(surface.entries)*sum(len(r['functions']) for r in coverage)
+        if surface_evidence['function_references'] != expected:
+            raise RuntimeError('Not every selected function references the agent surface')
+        if any(inspect_surface(binaries[v]['path'])['present'] for v in ('baseline','msvc')):
+            raise RuntimeError('Control binaries unexpectedly contain an agent surface')
+    elif surface_evidence['present']:
+        raise RuntimeError('Unrequested agent surface present in protected binary')
     for r in coverage:
         for f in r['functions']:
             f['object_machine_code_changed']=f['machine_code_changed']
@@ -240,6 +269,7 @@ def protect(config):
     if build_identity(c)!=initial_identity:raise ValueError('Source or build configuration changed during compilation; rebuild required')
     manifest={'schema_version':1,'seed':c.get('seed',11),'mode':'balanced','inputs':inputs,
               'compile_options':common,'tools':tools,'llvm_version':'20.1.8','binaries':binaries,'coverage':coverage,
+              'agent_surface':surface_evidence,
               'ok':all(f.get('machine_code_changed') for r in coverage for f in r['functions']),
               'build_identity':build_identity(c,dependencies),'tool_hashes':{name:sha256(tools[name]) for name in ('cl','link','clang','llc','transform')},
               'behavior_verified':False,'anti_rea_effectiveness_verified':False}
@@ -269,6 +299,10 @@ def verify(config):
     if json.loads((out/'build-status.json').read_text())['status']!='built':raise ValueError('Build was not completed')
     for b in manifest['binaries'].values():
         if sha256(b['path'])!=b['sha256']: raise ValueError('Build artifact hash mismatch')
+    surface_evidence = inspect_surface(manifest['binaries']['protected']['path'])
+    surface = prepare_surface(c.get('agent_surface'),c.get('seed',11))
+    surface_ok = surface_evidence['present'] == (surface is not None)
+    if surface: surface_ok = surface_ok and surface_evidence.get('payload_sha256') == surface.sha256
     cfg=c.get('verification',{}); stdin=cfg.get('stdin','')
     outputs={v:run([b['path'],*cfg.get('args',[])],input=stdin,timeout=60).strip() for v,b in manifest['binaries'].items()}
     expected=cfg.get('expected_stdout')
@@ -292,8 +326,10 @@ def verify(config):
         limits=evaluate_limits(samples['baseline'],samples['protected'],manifest['binaries']['baseline']['module_code_size'],manifest['binaries']['protected']['module_code_size'])
         function_limits[entry['function']]=limits;all_samples[entry['function']]=samples
     limits=next(iter(function_limits.values())) if len(function_limits)==1 else {'ok':all(l['ok'] for l in function_limits.values()),'per_function':function_limits}
-    report={'schema_version':1,'ok':equivalent and limits['ok'],'behavior_equivalent':equivalent,'outputs':outputs,
+    report={'schema_version':1,'ok':equivalent and limits['ok'] and surface_ok,'behavior_equivalent':equivalent,'outputs':outputs,
             'samples':all_samples,'limits':limits,'function_limits':function_limits,'coverage':manifest['coverage'],'anti_rea_effectiveness_verified':False,
+            'agent_surface':surface_evidence,'surface_verified':surface_ok,
+            'binary_size_delta_bytes':manifest['binaries']['protected'].get('file_size',0)-manifest['binaries']['baseline'].get('file_size',0),
             'input_build_manifest_sha256':sha256(out/'build-manifest.json')}
     write_json(out/'verification.json',report)
     return report

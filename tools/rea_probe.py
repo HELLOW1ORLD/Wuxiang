@@ -12,10 +12,12 @@ from wuxiang.build import ROOT,within_output,write_json,sha256
 def discover():
     packages=Path(os.environ.get('LOCALAPPDATA',''))/'npm-cache/_npx'
     cli=None
-    for pkg in packages.glob('*/node_modules/rea-agents/package.json'):
+    local=ROOT/'toolchain/analysis/rea-agents-6.2.0/node_modules/rea-agents/package.json'
+    candidates=([local] if local.is_file() else [])+list(packages.glob('*/node_modules/rea-agents/package.json'))
+    for pkg in candidates:
         if json.loads(pkg.read_text(encoding='utf-8')).get('version')=='6.2.0':
             cli=pkg.parent/'scripts/rea.mjs';break
-    return cli,ROOT.parent/'Tools/Native/ghidra_12.1.4_PUBLIC',ROOT.parent/'Tools/Native/jdk-21.0.12.1+1'
+    return cli,ROOT/'toolchain/analysis/ghidra_12.1.4_PUBLIC',ROOT/'toolchain/analysis/jdk-21.0.12.1+1'
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('action',choices=['analyze','decompile','trace']);p.add_argument('target',type=Path);p.add_argument('--query');p.add_argument('--out',type=Path,required=True)

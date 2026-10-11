@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(Wuxiang VERSION 0.1.0 LANGUAGES C CXX)
+project(Wuxiang VERSION 0.1.1 LANGUAGES C CXX)
 find_package(LLVM 20.1.8 EXACT REQUIRED CONFIG)
 message(STATUS "Using LLVM ${LLVM_PACKAGE_VERSION} from ${LLVM_DIR}")
 # The official Windows 20.1.8 SDK exports its builder's absolute DIA path.

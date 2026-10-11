@@ -1,5 +1,7 @@
 # 从示例到自己的 C++ 模块
 
+0.1.1 的提示词注入与语义误导载荷另见 [功能教程](agent-surfaces.zh-CN.md)，可直接用 `examples/compat-surfaces.json` 构建并验证。
+
 ## 1. 准备环境
 
 打开 Visual Studio Installer，在 VS2022 中安装「使用 C++ 的桌面开发」，并确认 MSVC x64、Windows SDK、CMake 和 DIA SDK 可用。安装 Python 3.10+，在 PowerShell 运行 `python --version`。本项目无需 pip 安装。

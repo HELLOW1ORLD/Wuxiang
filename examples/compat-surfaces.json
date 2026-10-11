@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "mode": "balanced",
+  "standard": "c++20",
+  "seed": 11,
+  "module": {"sources": ["compat/module.cpp"]},
+  "main": {"sources": ["compat/main.cpp"]},
+  "include_dirs": ["compat"],
+  "output_dir": "../build/compat-surfaces",
+  "agent_surface": {
+    "experimental": true,
+    "prompt_injection": "marker",
+    "semantic_decoy": "utf8_parser",
+    "max_bytes": 8192
+  },
+  "verification": {"expected_stdout": "WUXIANG_ABI_OK"}
+}
